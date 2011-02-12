@@ -40,6 +40,8 @@
 #import "NSString+PSPathAdditions.h"
 #import "NSString+PSIconFilenames.h"
 #import "PSLog.h"
+#import "TouchXML.h"
+#import "CXMLNode_XPathExtensions.h"
 
 
 #define kARAppIconSize (29)
@@ -108,7 +110,6 @@
 		self.hasNewReviews = NO;
 		self.importState = DetailsImportStateEmpty;
 		self.fetchAppIcon = NO;
-		currentString = [[NSMutableString alloc] init];
 	}
 	return self;
 }
@@ -130,7 +131,6 @@
 	[supportURL release];
 	[supportURLTitle release];
 	[lastUpdated release];
-	[currentString release];
 	[super dealloc];
 }
 
@@ -144,6 +144,29 @@
 	NSString *documentsDirectory = [NSString documentsPath];
 	NSString *result = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%@-details.xml", self.appIdentifier, self.storeIdentifier]];
 	return result;
+}
+
+- (BOOL)validateDetails
+{
+	if (self.category==nil || [self.category length]==0)
+		return NO;
+	if (self.categoryIdentifier==nil || [self.categoryIdentifier length]==0)
+		return NO;
+	if (self.released==nil || [self.released length]==0)
+		return NO;
+	if (self.appVersion==nil || [self.appVersion length]==0)
+		return NO;
+	if (self.appSize==nil || [self.appSize length]==0)
+		return NO;
+	if (self.localPrice==nil || [self.localPrice length]==0)
+		return NO;
+	if (self.appName==nil || [self.appName length]==0)
+		return NO;
+	if (self.appCompany==nil || [self.appCompany length]==0)
+		return NO;
+
+	// Everything looks OK.
+	return YES;
 }
 
 - (void)processDetails:(NSData *)data
@@ -161,30 +184,274 @@
 
 	// Initialise some members used whilst parsing XML content.
 	self.importState = DetailsImportStateParsing;
-	skippingCollapsedDisclosure = NO;
-	multipleVersions = YES;
-	NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithData:data];
-	xmlParser.delegate = self;
-	xmlParser.shouldResolveExternalEntities = NO;
-	xmlState = DetailsCheckingAvailability;
-	[currentString setString:@""];
 
-	// Parse XML content.
-	if (([xmlParser parse] == YES) && (xmlState == DetailsParsingComplete))
+	CXMLDocument *xmlDocument = [[CXMLDocument alloc] initWithData:data options:0 error:nil];
+	if (xmlDocument)
+	{
+		// Extract details from XML content.
+		CXMLElement *rootElem = [xmlDocument rootElement];
+
+		// First get all the easy text nodes.
+		NSError *error = nil;
+		NSDictionary *xmlnsDict = [NSDictionary dictionaryWithObjectsAndKeys:
+							  @"http://www.apple.com/itms/",
+							  @"itunes",
+							  nil];
+		NSArray *textNodes = [rootElem nodesForXPath:@"//itunes:TextView/itunes:SetFontStyle" namespaceMappings:xmlnsDict error:&error];
+		if (textNodes && [textNodes count] >= 9)
+		{
+			self.appCompany = [[[textNodes objectAtIndex:0] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			self.appName = [[[textNodes objectAtIndex:1] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+			NSString *categoryValue = [[[textNodes objectAtIndex:2] stringValue] stringByReplacingOccurrencesOfString:@"Category: " withString:@""];
+			self.category = [categoryValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+			NSString *updatedValue = [[[textNodes objectAtIndex:3] stringValue] stringByReplacingOccurrencesOfString:@"Updated " withString:@""];
+			self.released = [updatedValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+			NSString *currentVersionValue = [[[textNodes objectAtIndex:4] stringValue] stringByReplacingOccurrencesOfString:@"Current Version: " withString:@""];
+			self.appVersion = [currentVersionValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+			self.appSize = [[[textNodes objectAtIndex:7] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			self.localPrice = [[[textNodes objectAtIndex:8] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+			// Use category string to find the categoryId.
+			textNodes = [rootElem nodesForXPath:[NSString stringWithFormat:@"//itunes:PathElement[@displayName='%@']", self.category] namespaceMappings:xmlnsDict error:&error];
+			if (textNodes && [textNodes count] > 0)
+			{
+				NSString *catUrl = [[[textNodes objectAtIndex:0] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				NSArray *parts = [catUrl componentsSeparatedByString:@"/id"];
+				parts = [[parts lastObject] componentsSeparatedByString:@"?"];
+				self.categoryIdentifier = [parts objectAtIndex:0];
+			}
+
+			// Company/support URLs.
+			textNodes = [rootElem nodesForXPath:@"//itunes:OpenURL" namespaceMappings:xmlnsDict error:&error];
+			if (textNodes && [textNodes count] >= 5)
+			{
+				CXMLElement *companyURLNode = [textNodes objectAtIndex:2];
+				self.companyURL = [[companyURLNode attributeForName:@"url"] stringValue];
+				self.companyURLTitle = [[companyURLNode attributeForName:@"draggingName"] stringValue];
+
+				CXMLElement *supportURLNode = [textNodes objectAtIndex:4];
+				self.supportURL = [[supportURLNode attributeForName:@"url"] stringValue];
+				self.supportURLTitle = [[supportURLNode attributeForName:@"draggingName"] stringValue];
+			}
+
+			// App icon URL
+			textNodes = [rootElem nodesForXPath:[NSString stringWithFormat:@"//itunes:GotoURL[@draggingName='%@']//itunes:PictureView[@alt='%@ artwork']", self.appName, self.appName] namespaceMappings:xmlnsDict error:&error];
+			if (textNodes && [textNodes count] > 0)
+			{
+				CXMLElement *iconNode = [textNodes objectAtIndex:0];
+				self.appIconURL = [[iconNode attributeForName:@"url"] stringValue];
+			}
+
+			// Rating counts for CURRENT version.
+			textNodes = [rootElem nodesForXPath:@"//itunes:View[@viewName='RatingsFrame']//itunes:Test[@id='1234']//itunes:SetFontStyle[@normalStyle='descriptionTextColor']" namespaceMappings:xmlnsDict error:&error];
+			if (textNodes && [textNodes count] >= 6)
+			{
+				int currentIndex = 0;
+
+				// Total ratings count.
+				CXMLElement *ratingsValue = [textNodes objectAtIndex:currentIndex];
+				NSString *valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountCurrent = [valueString integerValue];
+				currentIndex++;
+
+				// Do we need to skip a row?
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				NSArray *parts = [valueString componentsSeparatedByString:@" "];
+				if ([parts count] > 1)
+					currentIndex++;
+
+				// 5-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountCurrent5Stars = [valueString integerValue];
+				currentIndex++;
+				// 4-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountCurrent4Stars = [valueString integerValue];
+				currentIndex++;
+				// 3-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountCurrent3Stars = [valueString integerValue];
+				currentIndex++;
+				// 2-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountCurrent2Stars = [valueString integerValue];
+				currentIndex++;
+				// 1-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountCurrent1Star = [valueString integerValue];
+				currentIndex++;
+			}
+
+			// Rating counts for ALL versions.
+			textNodes = [rootElem nodesForXPath:@"//itunes:View[@viewName='RatingsFrame']//itunes:Test[@id='5678']//itunes:SetFontStyle[@normalStyle='descriptionTextColor']" namespaceMappings:xmlnsDict error:&error];
+			if (textNodes && [textNodes count] >= 6)
+			{
+				int currentIndex = 0;
+
+				// Total ratings count.
+				CXMLElement *ratingsValue = [textNodes objectAtIndex:currentIndex];
+				NSString *valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountAll = [valueString integerValue];
+				currentIndex++;
+
+				// Do we need to skip a row?
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				NSArray *parts = [valueString componentsSeparatedByString:@" "];
+				if ([parts count] > 1)
+					currentIndex++;
+
+				// 5-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountAll5Stars = [valueString integerValue];
+				currentIndex++;
+				// 4-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountAll4Stars = [valueString integerValue];
+				currentIndex++;
+				// 3-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountAll3Stars = [valueString integerValue];
+				currentIndex++;
+				// 2-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountAll2Stars = [valueString integerValue];
+				currentIndex++;
+				// 1-star ratings count.
+				ratingsValue = [textNodes objectAtIndex:currentIndex];
+				valueString = [[ratingsValue stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				self.ratingCountAll1Star = [valueString integerValue];
+				currentIndex++;
+			}
+
+			// Average rating for CURRENT version.
+			textNodes = [rootElem nodesForXPath:@"//itunes:View[@viewName='RatingsFrame']//itunes:Test[@id='1234']//itunes:HBoxView//itunes:VBoxView//itunes:HBoxView" namespaceMappings:xmlnsDict error:&error];
+			if (textNodes && [textNodes count] > 0)
+			{
+				CXMLElement *ratingNode = [textNodes objectAtIndex:0];
+				NSString *rating = [[[ratingNode attributeForName:@"alt"] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				GTMRegex *ratingRegex = [GTMRegex regexWithPattern:@"^([0-9])( and a half)? star[s]?"];
+				NSArray *subPatterns = [ratingRegex subPatternsOfString:rating];
+				if (subPatterns)
+				{
+					float ratingFloat = (float)[[subPatterns objectAtIndex:1] integerValue];
+					if ([subPatterns objectAtIndex:2] != [NSNull null])
+					{
+						ratingFloat += 0.5;
+					}
+					self.ratingCurrent = ratingFloat;
+				}
+				else
+				{
+					// Didn't match regex.
+					self.ratingCurrent = 0.0;
+				}
+			}
+
+			// Average rating for ALL versions.
+			textNodes = [rootElem nodesForXPath:@"//itunes:View[@viewName='RatingsFrame']//itunes:Test[@id='5678']//itunes:HBoxView//itunes:VBoxView//itunes:HBoxView" namespaceMappings:xmlnsDict error:&error];
+			if (textNodes && [textNodes count] > 0)
+			{
+				CXMLElement *ratingNode = [textNodes objectAtIndex:0];
+				NSString *rating = [[[ratingNode attributeForName:@"alt"] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				GTMRegex *ratingRegex = [GTMRegex regexWithPattern:@"^([0-9])( and a half)? star[s]?"];
+				NSArray *subPatterns = [ratingRegex subPatternsOfString:rating];
+				if (subPatterns)
+				{
+					float ratingFloat = (float)[[subPatterns objectAtIndex:1] integerValue];
+					if ([subPatterns objectAtIndex:2] != [NSNull null])
+					{
+						ratingFloat += 0.5;
+					}
+					self.ratingAll = ratingFloat;
+				}
+				else
+				{
+					// Didn't match regex.
+					self.ratingAll = 0.0;
+				}
+			}
+
+			// Review counts.
+			textNodes = [rootElem nodesForXPath:@"//itunes:GotoURL/itunes:TextView/itunes:SetFontStyle[@normalStyle='textColor']/itunes:b" namespaceMappings:xmlnsDict error:&error];
+			if (textNodes && [textNodes count] >= 3)
+			{
+				GTMRegex *regex = [GTMRegex regexWithPattern:@"^([0-9]+)[^0-9].*"];
+
+				// Review counts for CURRENT version.
+				CXMLElement *textNode = [textNodes objectAtIndex:[textNodes count]-2];
+				NSString *textValue = [[textNode stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				NSArray *substrings = [regex subPatternsOfString:textValue];
+				if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]) && ([substrings objectAtIndex:1] != [NSNull null]))
+				{
+					NSString *count = [substrings objectAtIndex:1];
+					self.reviewCountCurrent = [count integerValue];
+				}
+				else if ([textValue hasPrefix:@"Reviews"])
+				{
+					// We have >0 current reviews, but no number given, which seems to mean 1 only.
+					self.reviewCountCurrent = 1;
+				}
+				else
+				{
+					PSLogWarning(@"Unrecognised CURRENT review count: %@", textValue);
+				}
+
+				// Review counts for ALL versions.
+				textNode = [textNodes lastObject];
+				textValue = [[textNode stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				substrings = [regex subPatternsOfString:textValue];
+				if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]) && ([substrings objectAtIndex:1] != [NSNull null]))
+				{
+					NSString *count = [substrings objectAtIndex:1];
+					self.reviewCountAll = [count integerValue];
+				}
+				else if ([textValue hasPrefix:@"See All"])
+				{
+					// We have >0 reviews, but no number given, which seems to mean 1 only.
+					self.reviewCountAll = 1;
+				}
+				else
+				{
+					PSLogWarning(@"Unrecognised ALL review count: %@", textValue);
+				}
+			}
+
+			self.importState = ([self validateDetails] ? DetailsImportStateComplete : DetailsImportStateParseFailed);
+		}
+		else
+			self.importState = DetailsImportStateParseFailed;
+
+		[xmlDocument release], xmlDocument = nil;
+	}
+	else
+		self.importState = DetailsImportStateParseFailed;
+
+	// Did we successfully extract the details?
+	if (self.importState == DetailsImportStateComplete)
 	{
 		PSLog(@"Successfully parsed XML document");
 		self.lastUpdated = [NSDate date];
 		self.lastSortOrder = (ARReviewsSortOrder) [[NSUserDefaults standardUserDefaults] integerForKey:@"sortOrder"];
-		self.importState = DetailsImportStateComplete;
 	}
 	else
 	{
 		PSLog(@"Failed to parse XML document");
-		if (self.importState == DetailsImportStateParsing)
-			self.importState = DetailsImportStateParseFailed;
 	}
-
-	[xmlParser release];
 
 	// Download app icon if necessary.
 	if ((self.importState == DetailsImportStateComplete) && (self.appIconURL) && ([self.appIconURL length] > 0))
@@ -238,763 +505,6 @@
 	receiver.supportURL = self.supportURL;
 	receiver.supportURLTitle = self.supportURLTitle;
 	receiver.appIconURL = self.appIconURL;
-}
-
-
-#pragma mark -
-#pragma mark NSXMLParser delegate methods
-
-- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qualifiedName attributes:(NSDictionary *)attributeDict
-{
-	NSString *elementNameLower = [elementName lowercaseString];
-	if ([elementNameLower isEqualToString:@"document"])
-	{
-		switch (xmlState)
-		{
-			case DetailsCheckingAvailability:
-			{
-				id browsePath = [attributeDict valueForKey:@"browsePath"];
-				if (browsePath != nil)
-				{
-					// App seems to be available, continue parsing file.
-					xmlState = DetailsSeekingAppGenre;
-				}
-				else
-				{
-					// App seems to be unavailable, stop parsing file.
-					self.importState = DetailsImportStateUnavailable;
-					[parser abortParsing];
-				}
-				break;
-			}
-		}
-	}
-	else if ([elementNameLower isEqualToString:@"b"] || [elementNameLower isEqualToString:@"setfontstyle"] || [elementNameLower isEqualToString:@"pathelement"])
-	{
-		[currentString setString:@""];
-		switch (xmlState)
-		{
-			case DetailsSeekingAppGenre:
-				if ([elementNameLower isEqualToString:@"pathelement"])
-				{
-					self.category = [attributeDict objectForKey:@"displayName"];
-					xmlState = DetailsReadingAppGenre;
-				}
-				break;
-			case DetailsSeekingCategory:
-				if (appName && appCompany && [elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCategory;
-				}
-				break;
-			case DetailsSeekingReleased:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingReleased;
-				}
-				break;
-			case DetailsSeekingCopyright:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCopyright;
-				}
-				break;
-			case DetailsSeekingVersion:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingVersion;
-				}
-				break;
-			case DetailsSeekingSize:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingSize;
-				}
-				break;
-			case DetailsSeekingPrice:
-				if ([elementNameLower isEqualToString:@"b"])
-				{
-					xmlState = DetailsReadingPrice;
-				}
-				break;
-			case DetailsSeekingCustomerRatings:
-				if ([elementNameLower isEqualToString:@"b"])
-				{
-					xmlState = DetailsReadingCustomerRatings;
-				}
-				break;
-			case DetailsSeekingCurrentRatingsDisclosure:
-				if (!skippingCollapsedDisclosure && [elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCurrentRatingsNotEnoughReceived;
-				}
-				break;
-			case DetailsSeekingCurrentRatingsNotEnoughReceivedDuplicate:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCurrentRatingsNotEnoughReceivedDuplicate;
-					skippingCollapsedDisclosure = NO;
-				}
-				break;
-			case DetailsSeekingCurrentRatingsTitle:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCurrentRatingsTitle;
-				}
-				break;
-			case DetailsSeekingCurrentRatingsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCurrentRatingsCount;
-				}
-				break;
-			case DetailsSeekingCurrentRatingsFiveStarsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCurrentRatingsFiveStarsCount;
-				}
-				break;
-			case DetailsSeekingCurrentRatingsFourStarsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCurrentRatingsFourStarsCount;
-				}
-				break;
-			case DetailsSeekingCurrentRatingsThreeStarsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCurrentRatingsThreeStarsCount;
-				}
-				break;
-			case DetailsSeekingCurrentRatingsTwoStarsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCurrentRatingsTwoStarsCount;
-				}
-				break;
-			case DetailsSeekingCurrentRatingsOneStarCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingCurrentRatingsOneStarCount;
-				}
-				break;
-			case DetailsSeekingAllRatingsDisclosure:
-				if (!skippingCollapsedDisclosure && [elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					// Not enough ratings.
-					xmlState = DetailsReadingAllRatingsNotEnoughReceived;
-				}
-				break;
-			case DetailsSeekingAllRatingsNotEnoughReceivedDuplicate:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingAllRatingsNotEnoughReceivedDuplicate;
-					skippingCollapsedDisclosure = NO;
-				}
-				break;
-			case DetailsSeekingAllRatingsTitle:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingAllRatingsTitle;
-				}
-				break;
-			case DetailsSeekingAllRatingsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingAllRatingsCount;
-				}
-				break;
-			case DetailsSeekingAllRatingsFiveStarsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingAllRatingsFiveStarsCount;
-				}
-				break;
-			case DetailsSeekingAllRatingsFourStarsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingAllRatingsFourStarsCount;
-				}
-				break;
-			case DetailsSeekingAllRatingsThreeStarsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingAllRatingsThreeStarsCount;
-				}
-				break;
-			case DetailsSeekingAllRatingsTwoStarsCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingAllRatingsTwoStarsCount;
-				}
-				break;
-			case DetailsSeekingAllRatingsOneStarCount:
-				if ([elementNameLower isEqualToString:@"setfontstyle"])
-				{
-					xmlState = DetailsReadingAllRatingsOneStarCount;
-				}
-				break;
-			case DetailsSeekingRateThisSoftware:
-				if ([elementNameLower isEqualToString:@"b"])
-				{
-					xmlState = DetailsReadingRateThisSoftware;
-				}
-				break;
-			case DetailsSeekingCustomerReviews:
-				if ([elementNameLower isEqualToString:@"b"])
-				{
-					xmlState = DetailsReadingCustomerReviews;
-				}
-				break;
-			case DetailsSeekingCurrentReviewsCount:
-				if ([elementNameLower isEqualToString:@"b"])
-				{
-					xmlState = DetailsReadingCurrentReviewsCount;
-				}
-				break;
-			case DetailsSeekingAllReviewsCount:
-				if ([elementNameLower isEqualToString:@"b"])
-				{
-					xmlState = DetailsReadingAllReviewsCount;
-				}
-				break;
-			case DetailsSeekingWriteReview:
-				xmlState = DetailsReadingWriteReview;
-				break;
-		}
-	}
-	else if ([elementNameLower isEqualToString:@"picturebuttonview"])
-	{
-		switch (xmlState)
-		{
-			case DetailsSeekingCurrentRatingsDisclosure:
-			{
-				NSString *disclosureState = [attributeDict objectForKey:@"alt"];
-				if ([disclosureState isEqualToString:@"expanded"])
-					xmlState = DetailsSeekingCurrentRatingsTitle;
-				else
-				{
-					// We need to skip the "collapsed" disclosure.
-					xmlState = DetailsSeekingCurrentRatingsDisclosure;
-					skippingCollapsedDisclosure = YES;
-				}
-				break;
-			}
-			case DetailsSeekingAllRatingsDisclosure:
-			{
-				NSString *disclosureState = [attributeDict objectForKey:@"alt"];
-				if ([disclosureState isEqualToString:@"expanded"])
-					xmlState = DetailsSeekingAllRatingsTitle;
-				else
-				{
-					// We need to skip the "collapsed" disclosure.
-					xmlState = DetailsSeekingAllRatingsDisclosure;
-					skippingCollapsedDisclosure = YES;
-				}
-				break;
-			}
-		}
-	}
-	else if ([elementNameLower isEqualToString:@"hboxview"])
-	{
-		switch (xmlState)
-		{
-			case DetailsSeekingCurrentAverageRating:
-			{
-				NSString *rating = [attributeDict objectForKey:@"alt"];
-				GTMRegex *ratingRegex = [GTMRegex regexWithPattern:@"^([0-9])( and a half)? star[s]?"];
-				NSArray *subPatterns = [ratingRegex subPatternsOfString:rating];
-				if (subPatterns)
-				{
-					float ratingFloat = (float)[[subPatterns objectAtIndex:1] integerValue];
-					if ([subPatterns objectAtIndex:2] != [NSNull null])
-					{
-						ratingFloat += 0.5;
-					}
-					self.ratingCurrent = ratingFloat;
-				}
-				else
-				{
-					// Didn't match regex.
-					self.ratingCurrent = 0.0;
-				}
-				xmlState = DetailsSeekingCurrentRatingsCount;
-				break;
-			}
-			case DetailsSeekingAllAverageRating:
-			{
-				NSString *rating = [attributeDict objectForKey:@"alt"];
-				GTMRegex *ratingRegex = [GTMRegex regexWithPattern:@"^([0-9])( and a half)? star[s]?"];
-				NSArray *subPatterns = [ratingRegex subPatternsOfString:rating];
-				if (subPatterns)
-				{
-					float ratingFloat = (float)[[subPatterns objectAtIndex:1] integerValue];
-					if ([subPatterns objectAtIndex:2] != [NSNull null])
-					{
-						ratingFloat += 0.5;
-					}
-					self.ratingAll = ratingFloat;
-				}
-				else
-				{
-					// Didn't match regex.
-					self.ratingAll = 0.0;
-				}
-				xmlState = DetailsSeekingAllRatingsCount;
-				break;
-			}
-		}
-	}
-	else if ([elementNameLower isEqualToString:@"openurl"])
-	{
-		switch (xmlState)
-		{
-			case DetailsSeekingCurrentReviewsCountURL:
-			case DetailsSeekingAllReviewsCountURL:
-			case DetailsSeekingCompanyURL:
-				self.companyURL = [attributeDict objectForKey:@"url"];
-				self.companyURLTitle = [attributeDict objectForKey:@"draggingName"];
-				xmlState = DetailsSeekingCompanyURLDuplicate;
-				break;
-			case DetailsSeekingCompanyURLDuplicate:
-				xmlState = DetailsSeekingSupportURL;
-				break;
-			case DetailsSeekingSupportURL:
-				self.supportURL = [attributeDict objectForKey:@"url"];
-				self.supportURLTitle = [attributeDict objectForKey:@"draggingName"];
-				xmlState = DetailsParsingComplete;
-				break;
-		}
-	}
-	else if ([elementNameLower isEqualToString:@"gotourl"])
-	{
-		switch (xmlState)
-		{
-			case DetailsSeekingAppNameAndIconAndCompanyName:
-			{
-				NSString *url = [attributeDict objectForKey:@"url"];
-				NSString *value = [attributeDict objectForKey:@"draggingName"];
-				if (value)
-				{
-					NSRange viewArtistQuery = [url rangeOfString:@"/artist/"];
-					NSRange viewSoftwareQuery = [url rangeOfString:@"/app/"];
-					if (viewArtistQuery.location != NSNotFound)
-					{
-						self.appCompany = value;
-					}
-					else if (viewSoftwareQuery.location != NSNotFound)
-					{
-						self.appName = value;
-					}
-					xmlState = (self.appName && self.appCompany && self.appIconURL) ? DetailsSeekingCategory : xmlState;
-				}
-				break;
-			}
-			case DetailsSeekingCurrentReviewsCountURL:
-			case DetailsSeekingAllReviewsCountURL:
-			{
-				NSString *url = [attributeDict objectForKey:@"url"];
-				NSRange reviewsQuery = [url rangeOfString:@"viewContentsUserReviews?"];
-				if (reviewsQuery.location != NSNotFound)
-				{
-					// URL is used for fetching reviews, now check if they are for current version or all versions.
-					NSRange currentQuery = [url rangeOfString:@"onlyLatestVersion=true"];
-					if (currentQuery.location != NSNotFound)
-					{
-						// URL is for current version reviews.
-						xmlState = DetailsSeekingCurrentReviewsCount;
-					}
-					else
-					{
-						// URL is for all version reviews.
-						xmlState = DetailsSeekingAllReviewsCount;
-					}
-				}
-				break;
-			}
-		}
-	}
-	else if ([elementNameLower isEqualToString:@"pictureview"])
-	{
-		switch (xmlState)
-		{
-			case DetailsSeekingAppNameAndIconAndCompanyName:
-			{
-				GTMRegex *regex = [GTMRegex regexWithPattern:@"artwork$"];
-				if ([regex matchesSubStringInString:[attributeDict objectForKey:@"alt"]])
-				{
-					self.appIconURL = [attributeDict objectForKey:@"url"];
-					xmlState = (self.appName && self.appCompany && self.appIconURL) ? DetailsSeekingCategory : xmlState;
-				}
-				break;
-			}
-		}
-	}
-}
-
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
-{
-	switch (xmlState)
-	{
-		case DetailsReadingAppGenre:
-		case DetailsReadingCategory:
-		case DetailsReadingReleased:
-		case DetailsReadingCopyright:
-		case DetailsReadingVersion:
-		case DetailsReadingSize:
-		case DetailsReadingPrice:
-		case DetailsReadingCustomerRatings:
-		case DetailsReadingCurrentRatingsNotEnoughReceived:
-		case DetailsReadingCurrentRatingsNotEnoughReceivedDuplicate:
-		case DetailsReadingCurrentRatingsTitle:
-		case DetailsReadingCurrentRatingsCount:
-		case DetailsReadingCurrentRatingsFiveStarsCount:
-		case DetailsReadingCurrentRatingsFourStarsCount:
-		case DetailsReadingCurrentRatingsThreeStarsCount:
-		case DetailsReadingCurrentRatingsTwoStarsCount:
-		case DetailsReadingCurrentRatingsOneStarCount:
-		case DetailsReadingAllRatingsNotEnoughReceived:
-		case DetailsReadingAllRatingsNotEnoughReceivedDuplicate:
-		case DetailsReadingAllRatingsTitle:
-		case DetailsReadingAllRatingsCount:
-		case DetailsReadingAllRatingsFiveStarsCount:
-		case DetailsReadingAllRatingsFourStarsCount:
-		case DetailsReadingAllRatingsThreeStarsCount:
-		case DetailsReadingAllRatingsTwoStarsCount:
-		case DetailsReadingAllRatingsOneStarCount:
-		case DetailsReadingRateThisSoftware:
-		case DetailsReadingCustomerReviews:
-		case DetailsReadingCurrentReviewsCount:
-		case DetailsReadingAllReviewsCount:
-		case DetailsReadingWriteReview:
-			[currentString appendString:string];
-			break;
-	}
-}
-
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName
-{
-	NSString *elementNameLower = [elementName lowercaseString];
-	if ([elementNameLower isEqualToString:@"b"] || [elementNameLower isEqualToString:@"setfontstyle"] || [elementNameLower isEqualToString:@"pathelement"])
-	{
-		PSLogDebug(@"Read <%@> content: [%@]", elementNameLower, currentString);
-		switch (xmlState)
-		{
-			case DetailsReadingAppGenre:
-			{
-				if ([elementNameLower isEqualToString:@"pathelement"])
-				{
-					GTMRegex *regex = [GTMRegex regexWithPattern:@".*/genre/mobile-software-applications/id([0-9][0-9][0-9][0-9]+).*"];
-					NSArray *substrings = [regex subPatternsOfString:currentString];
-					if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]) && ([substrings objectAtIndex:1] != [NSNull null]))
-					{
-						self.categoryIdentifier = [substrings objectAtIndex:1];
-						xmlState = DetailsSeekingAppNameAndIconAndCompanyName;
-					}
-					else
-						xmlState = DetailsSeekingAppGenre;
-				}
-				break;
-			}
-			case DetailsReadingCategory:
-			{
-				// We don't use this value.
-				CFStringTrimWhitespace((CFMutableStringRef)currentString);
-				if ([currentString hasPrefix:@"Category: "])
-					xmlState = DetailsSeekingReleased;
-				else
-					xmlState = DetailsSeekingCategory;
-				[currentString setString:@""];
-				break;
-			}
-			case DetailsReadingReleased:
-			{
-				[currentString replaceOccurrencesOfString:@"\n" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [currentString length])];
-				[currentString replaceOccurrencesOfString:@"\t" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [currentString length])];
-				GTMRegex *regex = [GTMRegex regexWithPattern:@"^[ ]*([^ ]+)[ ]+([^ ].*[^ ]).*"];
-				NSArray *substrings = [regex subPatternsOfString:currentString];
-				if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]) && ([substrings objectAtIndex:1] != [NSNull null]))
-				{
-					self.released = [substrings objectAtIndex:2];
-				}
-				else
-					self.released = @"";
-				[currentString setString:@""];
-				xmlState = DetailsSeekingVersion;
-				break;
-			}
-			case DetailsReadingCopyright:
-				// We don't use this value.
-				CFStringTrimWhitespace((CFMutableStringRef)currentString);
-				if ([currentString hasPrefix:@"Seller: "])
-					xmlState = DetailsSeekingCopyright;
-				else
-					xmlState = DetailsSeekingSize;
-				[currentString setString:@""];
-				break;
-			case DetailsReadingVersion:
-			{
-				[currentString replaceOccurrencesOfString:@"\n" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [currentString length])];
-				[currentString replaceOccurrencesOfString:@"\t" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [currentString length])];
-				GTMRegex *regex = [GTMRegex regexWithPattern:@"^[ ]*([^ ][^:]*):[ ]*([^ ]+)(.*)"];
-				NSArray *substrings = [regex subPatternsOfString:currentString];
-				if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]) && ([substrings objectAtIndex:1] != [NSNull null]))
-				{
-					self.appVersion = [substrings objectAtIndex:2];
-				}
-				else
-					self.appVersion = @"";
-				[currentString setString:@""];
-				xmlState = DetailsSeekingCopyright;
-				break;
-			}
-			case DetailsReadingSize:
-			{
-				[currentString replaceOccurrencesOfString:@"\n" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [currentString length])];
-				[currentString replaceOccurrencesOfString:@"\t" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [currentString length])];
-				GTMRegex *regex = [GTMRegex regexWithPattern:@"^[ ]*([^ ].*[^ ]).*"];
-				NSArray *substrings = [regex subPatternsOfString:currentString];
-				if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]))
-				{
-					self.appSize = [substrings objectAtIndex:1];
-				}
-				else
-					self.appSize = @"";
-				[currentString setString:@""];
-				xmlState = DetailsSeekingPrice;
-				break;
-			}
-			case DetailsReadingPrice:
-				self.localPrice = currentString;
-				[currentString setString:@""];
-				xmlState = DetailsSeekingCustomerRatings;
-				break;
-			case DetailsReadingCustomerRatings:
-				// Skip over the "Rated X for:" message.
-				CFStringTrimWhitespace((CFMutableStringRef)currentString);
-				if ([currentString isEqualToString:@"CUSTOMER RATINGS"])
-				{
-					[currentString setString:@""];
-					xmlState = DetailsSeekingCurrentRatingsDisclosure;
-					skippingCollapsedDisclosure = NO;
-				}
-				else
-					xmlState = DetailsSeekingCustomerRatings;
-				break;
-			case DetailsReadingCurrentRatingsNotEnoughReceived:
-			{
-				// We don't use this value.
-				[currentString setString:@""];
-				xmlState = DetailsSeekingCurrentRatingsNotEnoughReceivedDuplicate;
-				break;
-			}
-			case DetailsReadingCurrentRatingsNotEnoughReceivedDuplicate:
-			{
-				// We don't use this value.
-				[currentString setString:@""];
-				xmlState = DetailsSeekingAllRatingsDisclosure;
-				skippingCollapsedDisclosure = NO;
-				break;
-			}
-			case DetailsReadingCurrentRatingsTitle:
-				CFStringTrimWhitespace((CFMutableStringRef)currentString);
-				if ([currentString hasSuffix:@":"])
-					xmlState = DetailsSeekingCurrentAverageRating;
-				else
-				{
-					[currentString setString:@""];
-					xmlState = DetailsSeekingAllRatingsDisclosure;
-				}
-				break;
-			case DetailsReadingCurrentRatingsCount:
-			{
-				GTMRegex *regex = [GTMRegex regexWithPattern:@"^([0-9]+)[^0-9].*"];
-				NSArray *substrings = [regex subPatternsOfString:currentString];
-				if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]) && ([substrings objectAtIndex:1] != [NSNull null]))
-				{
-					NSString *count = [substrings objectAtIndex:1];
-					self.ratingCountCurrent = [count integerValue];
-				}
-				xmlState = DetailsSeekingCurrentRatingsFiveStarsCount;
-				break;
-			}
-			case DetailsReadingCurrentRatingsFiveStarsCount:
-			{
-				self.ratingCountCurrent5Stars = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingCurrentRatingsFourStarsCount;
-				break;
-			}
-			case DetailsReadingCurrentRatingsFourStarsCount:
-			{
-				self.ratingCountCurrent4Stars = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingCurrentRatingsThreeStarsCount;
-				break;
-			}
-			case DetailsReadingCurrentRatingsThreeStarsCount:
-			{
-				self.ratingCountCurrent3Stars = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingCurrentRatingsTwoStarsCount;
-				break;
-			}
-			case DetailsReadingCurrentRatingsTwoStarsCount:
-			{
-				self.ratingCountCurrent2Stars = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingCurrentRatingsOneStarCount;
-				break;
-			}
-			case DetailsReadingCurrentRatingsOneStarCount:
-			{
-				self.ratingCountCurrent1Star = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingAllRatingsDisclosure;
-				skippingCollapsedDisclosure = NO;
-				break;
-			}
-			case DetailsReadingAllRatingsNotEnoughReceived:
-			{
-				CFStringTrimWhitespace((CFMutableStringRef)currentString);
-				if ([currentString hasSuffix:@":"])
-				{
-					// No "All versions" ratings section.
-					xmlState = DetailsSeekingCustomerReviews;
-					multipleVersions = NO;
-				}
-				else
-				{
-					[currentString setString:@""];
-					xmlState = DetailsSeekingAllRatingsNotEnoughReceivedDuplicate;
-				}
-				break;
-			}
-			case DetailsReadingAllRatingsNotEnoughReceivedDuplicate:
-			{
-				// We don't use this value.
-				[currentString setString:@""];
-				xmlState = DetailsSeekingRateThisSoftware;
-				skippingCollapsedDisclosure = NO;
-				break;
-			}
-			case DetailsReadingAllRatingsTitle:
-				CFStringTrimWhitespace((CFMutableStringRef)currentString);
-				if ([currentString hasSuffix:@":"])
-					xmlState = DetailsSeekingAllAverageRating;
-				else
-				{
-					[currentString setString:@""];
-					xmlState = DetailsSeekingRateThisSoftware;
-				}
-				break;
-			case DetailsReadingAllRatingsCount:
-			{
-				GTMRegex *regex = [GTMRegex regexWithPattern:@"^([0-9]+)[^0-9].*"];
-				NSArray *substrings = [regex subPatternsOfString:currentString];
-				if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]) && ([substrings objectAtIndex:1] != [NSNull null]))
-				{
-					NSString *count = [substrings objectAtIndex:1];
-					self.ratingCountAll = [count integerValue];
-				}
-				xmlState = DetailsSeekingAllRatingsFiveStarsCount;
-				break;
-			}
-			case DetailsReadingAllRatingsFiveStarsCount:
-			{
-				self.ratingCountAll5Stars = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingAllRatingsFourStarsCount;
-				break;
-			}
-			case DetailsReadingAllRatingsFourStarsCount:
-			{
-				self.ratingCountAll4Stars = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingAllRatingsThreeStarsCount;
-				break;
-			}
-			case DetailsReadingAllRatingsThreeStarsCount:
-			{
-				self.ratingCountAll3Stars = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingAllRatingsTwoStarsCount;
-				break;
-			}
-			case DetailsReadingAllRatingsTwoStarsCount:
-			{
-				self.ratingCountAll2Stars = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingAllRatingsOneStarCount;
-				break;
-			}
-			case DetailsReadingAllRatingsOneStarCount:
-			{
-				self.ratingCountAll1Star = [currentString integerValue];
-				[currentString setString:@""];
-				xmlState = DetailsSeekingRateThisSoftware;
-				break;
-			}
-			case DetailsReadingRateThisSoftware:
-				CFStringTrimWhitespace((CFMutableStringRef)currentString);
-				if ([currentString hasSuffix:@":"])
-					xmlState = DetailsSeekingCustomerReviews;
-				else
-				{
-					[currentString setString:@""];
-					xmlState = DetailsSeekingRateThisSoftware;
-				}
-				break;
-			case DetailsReadingCustomerReviews:
-			{
-				// We don't use this value.
-				[currentString setString:@""];
-				xmlState = DetailsSeekingCurrentReviewsCountURL;
-				break;
-			}
-			case DetailsReadingCurrentReviewsCount:
-			{
-				GTMRegex *regex = [GTMRegex regexWithPattern:@"^([0-9]+)[^0-9].*"];
-				NSArray *substrings = [regex subPatternsOfString:currentString];
-				if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]) && ([substrings objectAtIndex:1] != [NSNull null]))
-				{
-					NSString *count = [substrings objectAtIndex:1];
-					self.reviewCountCurrent = [count integerValue];
-				}
-				else
-				{
-					// We have >0 current reviews, but no number given, which seems to mean 1 only.
-					self.reviewCountCurrent = 1;
-				}
-				xmlState = DetailsSeekingAllReviewsCount;
-				break;
-			}
-			case DetailsReadingAllReviewsCount:
-			{
-				GTMRegex *regex = [GTMRegex regexWithPattern:@"^([0-9]+)[^0-9].*"];
-				NSArray *substrings = [regex subPatternsOfString:currentString];
-				if (([substrings count] > 0) && ([substrings objectAtIndex:0] != [NSNull null]) && ([substrings objectAtIndex:1] != [NSNull null]))
-				{
-					NSString *count = [substrings objectAtIndex:1];
-					self.reviewCountAll = [count integerValue];
-				}
-				else
-				{
-					// We have >0 reviews, but no number given, which seems to mean 1 only.
-					self.reviewCountAll = 1;
-				}
-				xmlState = DetailsSeekingCompanyURL;
-				break;
-			}
-			case DetailsReadingWriteReview:
-			{
-				// We don't use this value.
-				[currentString setString:@""];
-				xmlState = DetailsSeekingCompanyURL;
-				break;
-			}
-		}
-	}
 }
 
 

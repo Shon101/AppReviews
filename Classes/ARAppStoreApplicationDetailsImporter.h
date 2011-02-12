@@ -53,84 +53,7 @@ typedef enum
 } DetailsImportState;
 
 
-typedef enum
-{
-	DetailsCheckingAvailability,
-	DetailsSeekingAppGenre,
-	DetailsSeekingAppNameAndIconAndCompanyName,
-	DetailsSeekingCategory,
-	DetailsSeekingReleased,
-	DetailsSeekingCopyright,
-	DetailsSeekingVersion,
-	DetailsSeekingSize,
-	DetailsSeekingPrice,
-	DetailsSeekingCustomerRatings,
-	DetailsSeekingCurrentRatingsNotEnoughReceivedDuplicate,
-	DetailsSeekingCurrentRatingsDisclosure,
-	DetailsSeekingCurrentRatingsTitle,
-	DetailsSeekingCurrentAverageRating,
-	DetailsSeekingCurrentRatingsCount,
-	DetailsSeekingCurrentRatingsFiveStarsCount,
-	DetailsSeekingCurrentRatingsFourStarsCount,
-	DetailsSeekingCurrentRatingsThreeStarsCount,
-	DetailsSeekingCurrentRatingsTwoStarsCount,
-	DetailsSeekingCurrentRatingsOneStarCount,
-	DetailsSeekingAllRatingsNotEnoughReceivedDuplicate,
-	DetailsSeekingAllRatingsDisclosure,
-	DetailsSeekingAllRatingsTitle,
-	DetailsSeekingAllAverageRating,
-	DetailsSeekingAllRatingsCount,
-	DetailsSeekingAllRatingsFiveStarsCount,
-	DetailsSeekingAllRatingsFourStarsCount,
-	DetailsSeekingAllRatingsThreeStarsCount,
-	DetailsSeekingAllRatingsTwoStarsCount,
-	DetailsSeekingAllRatingsOneStarCount,
-	DetailsSeekingRateThisSoftware,
-	DetailsSeekingCustomerReviews,
-	DetailsSeekingCurrentReviewsCountURL,
-	DetailsSeekingCurrentReviewsCount,
-	DetailsSeekingAllReviewsCountURL,
-	DetailsSeekingAllReviewsCount,
-	DetailsSeekingWriteReview,
-	DetailsSeekingCompanyURL,
-	DetailsSeekingCompanyURLDuplicate,
-	DetailsSeekingSupportURL,
-	DetailsReadingAppGenre,
-	DetailsReadingCategory,
-	DetailsReadingReleased,
-	DetailsReadingCopyright,
-	DetailsReadingVersion,
-	DetailsReadingSize,
-	DetailsReadingPrice,
-	DetailsReadingCustomerRatings,
-	DetailsReadingCurrentRatingsNotEnoughReceived,
-	DetailsReadingCurrentRatingsNotEnoughReceivedDuplicate,
-	DetailsReadingCurrentRatingsTitle,
-	DetailsReadingCurrentRatingsCount,
-	DetailsReadingCurrentRatingsFiveStarsCount,
-	DetailsReadingCurrentRatingsFourStarsCount,
-	DetailsReadingCurrentRatingsThreeStarsCount,
-	DetailsReadingCurrentRatingsTwoStarsCount,
-	DetailsReadingCurrentRatingsOneStarCount,
-	DetailsReadingAllRatingsNotEnoughReceived,
-	DetailsReadingAllRatingsNotEnoughReceivedDuplicate,
-	DetailsReadingAllRatingsTitle,
-	DetailsReadingAllRatingsCount,
-	DetailsReadingAllRatingsFiveStarsCount,
-	DetailsReadingAllRatingsFourStarsCount,
-	DetailsReadingAllRatingsThreeStarsCount,
-	DetailsReadingAllRatingsTwoStarsCount,
-	DetailsReadingAllRatingsOneStarCount,
-	DetailsReadingRateThisSoftware,
-	DetailsReadingCustomerReviews,
-	DetailsReadingCurrentReviewsCount,
-	DetailsReadingAllReviewsCount,
-	DetailsReadingWriteReview,
-	DetailsParsingComplete
-} DetailsXMLState;
-
-
-@interface ARAppStoreApplicationDetailsImporter : NSObject <NSXMLParserDelegate>
+@interface ARAppStoreApplicationDetailsImporter : NSObject
 {
 	NSString *appIdentifier;
 	NSString *storeIdentifier;
@@ -171,10 +94,6 @@ typedef enum
 
 	// Members used during XML parsing.
 	BOOL fetchAppIcon;
-	DetailsXMLState xmlState;
-	BOOL skippingCollapsedDisclosure;
-	BOOL multipleVersions;
-	NSMutableString *currentString;
 }
 
 @property (nonatomic, copy) NSString *appIdentifier;
