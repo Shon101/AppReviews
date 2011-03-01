@@ -209,8 +209,9 @@
 			NSString *updatedValue = [[[textNodes objectAtIndex:3] stringValue] stringByReplacingOccurrencesOfString:@"Updated " withString:@""];
 			self.released = [updatedValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-			NSString *currentVersionValue = [[[textNodes objectAtIndex:4] stringValue] stringByReplacingOccurrencesOfString:@"Current Version: " withString:@""];
-			self.appVersion = [currentVersionValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			NSString *currentVersionValue = [[[[textNodes objectAtIndex:4] stringValue] stringByReplacingOccurrencesOfString:@"Current Version: " withString:@""] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			NSArray *versionParts = [currentVersionValue componentsSeparatedByString:@" "];
+			self.appVersion = [versionParts objectAtIndex:0];
 
 			self.appSize = [[[textNodes objectAtIndex:7] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			self.localPrice = [[[textNodes objectAtIndex:8] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -239,11 +240,12 @@
 			}
 
 			// App icon URL
-			textNodes = [rootElem nodesForXPath:[NSString stringWithFormat:@"//itunes:GotoURL[@draggingName='%@']//itunes:PictureView[@alt='%@ artwork']", self.appName, self.appName] namespaceMappings:xmlnsDict error:&error];
+			textNodes = [rootElem nodesForXPath:@"//itunes:GotoURL/itunes:View/itunes:PictureView" namespaceMappings:xmlnsDict error:&error];
 			if (textNodes && [textNodes count] > 0)
 			{
 				CXMLElement *iconNode = [textNodes objectAtIndex:0];
-				self.appIconURL = [[iconNode attributeForName:@"url"] stringValue];
+				if ([[[iconNode attributeForName:@"alt"] stringValue] hasSuffix:@" artwork"])
+					self.appIconURL = [[iconNode attributeForName:@"url"] stringValue];
 			}
 
 			// Rating counts for CURRENT version.
