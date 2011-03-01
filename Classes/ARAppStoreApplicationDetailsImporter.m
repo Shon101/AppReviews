@@ -206,10 +206,15 @@
 			NSString *categoryValue = [[[textNodes objectAtIndex:2] stringValue] stringByReplacingOccurrencesOfString:@"Category: " withString:@""];
 			self.category = [categoryValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-			NSString *updatedValue = [[[textNodes objectAtIndex:3] stringValue] stringByReplacingOccurrencesOfString:@"Updated " withString:@""];
+			NSString *updatedValue = [[textNodes objectAtIndex:3] stringValue];
+			updatedValue = [updatedValue stringByReplacingOccurrencesOfString:@"Updated " withString:@""];
+			updatedValue = [updatedValue stringByReplacingOccurrencesOfString:@"Released " withString:@""];
 			self.released = [updatedValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-			NSString *currentVersionValue = [[[[textNodes objectAtIndex:4] stringValue] stringByReplacingOccurrencesOfString:@"Current Version: " withString:@""] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			NSString *currentVersionValue = [[textNodes objectAtIndex:4] stringValue];
+			currentVersionValue = [currentVersionValue stringByReplacingOccurrencesOfString:@"Current Version: " withString:@""];
+			currentVersionValue = [currentVersionValue stringByReplacingOccurrencesOfString:@"Version: " withString:@""];
+			currentVersionValue = [currentVersionValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			NSArray *versionParts = [currentVersionValue componentsSeparatedByString:@" "];
 			self.appVersion = [versionParts objectAtIndex:0];
 
