@@ -70,7 +70,7 @@ static NSString *kARAppReviewsDatabaseFile = @"AppReviews.db";
 
 @implementation ARAppReviewsStore
 
-@synthesize database, appStores;
+@synthesize database, iTunesUserAgent, appStores;
 
 SYNTHESIZE_SINGLETON_FOR_CLASS(ARAppReviewsStore);
 
@@ -115,8 +115,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(ARAppReviewsStore);
 
 - (ARAppReviewsStore *)init
 {
-	if (self = [super init])
+	self = [super init];
+	if (self)
 	{
+		iTunesUserAgent = [[NSString stringWithString:@"iTunes/10.2 (Macintosh; U; PPC Mac OS X 10.2"] retain];
 		if ([self open])
 		{
 			[self setupAppStores];
@@ -140,6 +142,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(ARAppReviewsStore);
 - (void)dealloc
 {
 	[database release];
+	[iTunesUserAgent release];
 	[appStores release];
 	[applications release];
 	[appDetails release];

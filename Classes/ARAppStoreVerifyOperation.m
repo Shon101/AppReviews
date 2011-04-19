@@ -52,7 +52,8 @@
 {
 	PSLogDebug(@"appIdentifier=%@, storeIdentifier=%@", appId, storeId);
 
-	if (self = [super init])
+	self = [super init];
+	if (self)
 	{
 		self.appIdentifier = appId;
 		self.storeIdentifier = storeId;
@@ -134,7 +135,7 @@
 	NSMutableURLRequest *theRequest=[NSMutableURLRequest requestWithURL:url
 															cachePolicy:NSURLRequestUseProtocolCachePolicy
 														timeoutInterval:10.0];
-	[theRequest setValue:@"iTunes/4.2 (Macintosh; U; PPC Mac OS X 10.2" forHTTPHeaderField:@"User-Agent"];
+	[theRequest setValue:[[ARAppReviewsStore sharedInstance] iTunesUserAgent] forHTTPHeaderField:@"User-Agent"];
 	[theRequest setValue:[NSString stringWithFormat:@" %@-1", storeIdentifier] forHTTPHeaderField:@"X-Apple-Store-Front"];
 
 #ifdef DEBUG

@@ -55,12 +55,14 @@ typedef enum
 @interface ARAppReviewsStore : NSObject
 {
 	FMDatabase *database;
+	NSString *iTunesUserAgent;
 	NSArray *appStores;
 	NSMutableArray *applications;
 	NSMutableDictionary *appDetails;	// dict(appId => dict(storeId => details))
 	NSMutableDictionary *appReviews;	// dict(appId => dict(storeId => array(review)))
 }
 
+@property (readonly) NSString *iTunesUserAgent;
 @property (retain) NSArray *appStores;
 
 /**
