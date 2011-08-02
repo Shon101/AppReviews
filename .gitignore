@@ -8,11 +8,13 @@ build/*
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-*.xcworkspace
 !default.xcworkspace
 xcuserdata
 profile
 *.moved-aside
+
+# Versioning
+InfoPlist.h
 
 # old skool
 .svn

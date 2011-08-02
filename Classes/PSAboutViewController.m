@@ -1,5 +1,5 @@
 //
-//	Copyright (c) 2008-2010, AppReviews
+//	Copyright (c) 2008-2011, AppReviews
 //	http://github.com/gambcl/AppReviews
 //	http://www.perculasoft.com/appreviews
 //	All rights reserved.
@@ -34,6 +34,7 @@
 #import "PSAboutViewController.h"
 #import "PSHelpViewController.h"
 #import "NSString+PSIconFilenames.h"
+#import "NSBundle+PSExtras.h"
 #import "PSLog.h"
 
 
@@ -70,7 +71,6 @@ typedef enum
 @property (nonatomic, retain) NSString *appId;
 @property (nonatomic, retain) NSMutableArray *rowTypes;
 
-- (id)infoValueForKey:(NSString*)key;
 - (NSString *)pathForIcon;
 
 @end
@@ -80,6 +80,20 @@ typedef enum
 
 @synthesize appName, appIcon, appVersion, copyright, creditsURL, websiteURL, appURL, releaseNotesURL, twitterName, email, appId, applicationNameFontSize, parentViewForConfirmation, rowTypes;
 
+
++ (NSString *)appVersion
+{
+	// In order of preference use PSApplicationSCMVersion, CFBundleShortVersionString, CFBundleVersion.
+	NSArray *candidateKeys = [NSArray arrayWithObjects:@"PSApplicationSCMVersion", @"CFBundleShortVersionString", @"CFBundleVersion", nil];
+	for (NSString *thisKey in candidateKeys)
+	{
+		NSString *version = [[NSBundle mainBundle] infoValueForKey:thisKey];
+		if (version && [version length] > 0)
+			return version;
+	}
+	// Failed to find any kind of version number.
+	return @"";
+}
 
 /**
  * Initializer.
@@ -125,16 +139,16 @@ typedef enum
 	[super viewDidLoad];
 
 	self.title = NSLocalizedString(@"About", @"About");
-	self.appName = [self infoValueForKey:@"CFBundleDisplayName"];
-	self.appVersion = [self infoValueForKey:@"CFBundleVersion"];
-	self.copyright = [self infoValueForKey:@"NSHumanReadableCopyright"];
-	self.creditsURL = [self infoValueForKey:@"PSCreditsURL"];
-	self.websiteURL = [self infoValueForKey:@"PSWebsiteURL"];
-	self.appURL = [self infoValueForKey:@"PSApplicationURL"];
-	self.releaseNotesURL = [self infoValueForKey:@"PSReleaseNotesURL"];
-	self.twitterName = [self infoValueForKey:@"PSTwitterName"];
-	self.email = [self infoValueForKey:@"PSContactEmail"];
-	self.appId = [self infoValueForKey:@"PSApplicationID"];
+	self.appName = [[NSBundle mainBundle] infoValueForKey:@"CFBundleDisplayName"];
+	self.appVersion = [PSAboutViewController appVersion];
+	self.copyright = [[NSBundle mainBundle] infoValueForKey:@"NSHumanReadableCopyright"];
+	self.creditsURL = [[NSBundle mainBundle] infoValueForKey:@"PSCreditsURL"];
+	self.websiteURL = [[NSBundle mainBundle] infoValueForKey:@"PSWebsiteURL"];
+	self.appURL = [[NSBundle mainBundle] infoValueForKey:@"PSApplicationURL"];
+	self.releaseNotesURL = [[NSBundle mainBundle] infoValueForKey:@"PSReleaseNotesURL"];
+	self.twitterName = [[NSBundle mainBundle] infoValueForKey:@"PSTwitterName"];
+	self.email = [[NSBundle mainBundle] infoValueForKey:@"PSContactEmail"];
+	self.appId = [[NSBundle mainBundle] infoValueForKey:@"PSApplicationID"];
 	NSString *iconFilePath = [self pathForIcon];
 	if (iconFilePath && [iconFilePath length] > 0)
 		self.appIcon = [UIImage imageWithContentsOfFile:iconFilePath];
@@ -206,23 +220,9 @@ typedef enum
     [super dealloc];
 }
 
-/**
- * Fetch objects from our bundle based on keys in our Info.plist
- *
- * @param key The key to look for in the Info.plist.
- *
- * @return Object found for key in Info.plist, otherwise nil if nothing found.
- */
-- (id)infoValueForKey:(NSString*)key
-{
-	if ([[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:key])
-		return [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:key];
-	return [[[NSBundle mainBundle] infoDictionary] objectForKey:key];
-}
-
 - (NSString *)pathForIcon
 {
-	NSString *iconFile = [self infoValueForKey:@"PSAboutIconFile"];
+	NSString *iconFile = [[NSBundle mainBundle] infoValueForKey:@"PSAboutIconFile"];
 
 	NSArray *filenames = [iconFile preferredIconFilenames];
 	for (NSString *filename in filenames)
@@ -251,6 +251,8 @@ typedef enum
 		case PSAboutFeedbackEmailRow:
 		case PSAboutRecommendEmailRow:
 			return indexPath;
+		default:
+			return nil;
 	}
 
     return nil;

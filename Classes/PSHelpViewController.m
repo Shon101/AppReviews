@@ -1,5 +1,5 @@
 //
-//	Copyright (c) 2008-2010, AppReviews
+//	Copyright (c) 2008-2011, AppReviews
 //	http://github.com/gambcl/AppReviews
 //	http://www.perculasoft.com/appreviews
 //	All rights reserved.
@@ -38,8 +38,6 @@
 @interface PSHelpViewController ()
 
 @property (nonatomic, retain) IBOutlet UIWebView *webView;
-
-- (id)infoValueForKey:(NSString*)key;
 
 @end
 
@@ -81,14 +79,6 @@
 	[viewTitle release];
 	[webView release];
 	[super dealloc];
-}
-
-// Fetch objects from our bundle based on keys in our Info.plist
-- (id)infoValueForKey:(NSString*)key
-{
-	if ([[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:key])
-		return [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:key];
-	return [[[NSBundle mainBundle] infoDictionary] objectForKey:key];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

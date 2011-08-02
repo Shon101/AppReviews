@@ -1,5 +1,5 @@
 //
-//	Copyright (c) 2008-2010, AppReviews
+//	Copyright (c) 2008-2011, AppReviews
 //	http://github.com/gambcl/AppReviews
 //	http://www.perculasoft.com/appreviews
 //	All rights reserved.
@@ -68,6 +68,8 @@
  * user taps on email or URL.
  */
 @property (nonatomic, retain) UIView *parentViewForConfirmation;
+
++ (NSString *)appVersion;
 
 /**
  * Initializer.
