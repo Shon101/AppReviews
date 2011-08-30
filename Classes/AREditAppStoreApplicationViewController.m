@@ -287,9 +287,13 @@
 	for (ARAppStore *store in [[ARAppReviewsStore sharedInstance] appStores])
 	{
 		[listLabels addObject:store.name];
-		[listImages addObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png", store.storeIdentifier]]];
 		[listValues addObject:store.storeIdentifier];
 		[listSelections addObject:[NSNumber numberWithBool:NO]];
+
+		// iOS 4 requires no extension and handles Retina display support, but iOS 3 requires extension.
+		UIImage *flagImage = [UIImage imageNamed:store.storeIdentifier];
+		flagImage = (flagImage ? flagImage : [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", store.storeIdentifier]]);
+		[listImages addObject:flagImage];
 	}
 	NSUInteger selIndex = [listValues indexOfObject:self.defaultStore];
 	[listSelections replaceObjectAtIndex:selIndex withObject:[NSNumber numberWithBool:YES]];

@@ -441,7 +441,11 @@
     // Configure the cell
 	ARAppStore *appStore = [displayedStores objectAtIndex:indexPath.row];
 	cell.nameLabel.text = appStore.name;
-	cell.flagView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", appStore.storeIdentifier]];
+
+	// iOS 4 requires no extension and handles Retina display support, but iOS 3 requires extension.
+	UIImage *flagImage = [UIImage imageNamed:appStore.storeIdentifier];
+	cell.flagView.image = (flagImage ? flagImage : [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", appStore.storeIdentifier]]);
+
 	ARAppStoreApplicationDetails *storeDetails = [[ARAppReviewsStore sharedInstance] detailsForApplication:appStoreApplication inStore:appStore];
 	if (storeDetails)
 	{
