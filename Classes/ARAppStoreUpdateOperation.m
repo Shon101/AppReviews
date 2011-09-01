@@ -161,7 +161,7 @@
 	NSURLResponse *response = nil;
 	NSError *error = nil;
 	NSMutableURLRequest *theRequest=[NSMutableURLRequest requestWithURL:url
-															cachePolicy:NSURLRequestUseProtocolCachePolicy
+															cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
 														timeoutInterval:10.0];
 	[theRequest setValue:[[ARAppReviewsStore sharedInstance] iTunesUserAgent] forHTTPHeaderField:@"User-Agent"];
 	[theRequest setValue:[NSString stringWithFormat:@" %@-1", appDetails.storeIdentifier] forHTTPHeaderField:@"X-Apple-Store-Front"];
