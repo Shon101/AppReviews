@@ -174,7 +174,7 @@
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-#ifdef DEBUG
+#ifdef AR_DEBUG_XML
 	// Save XML file for debugging.
 	[data writeToFile:[self localXMLFilename] atomically:YES];
 #else
