@@ -196,9 +196,9 @@
 		NSError *error = nil;
 		NSDictionary *xmlnsDict = [NSDictionary dictionaryWithObjectsAndKeys:
 							  @"http://www.apple.com/itms/",
-							  @"itunes",
+							  @"xmlns",
 							  nil];
-		NSArray *textNodes = [rootElem nodesForXPath:@"//itunes:TextView/itunes:SetFontStyle" namespaceMappings:xmlnsDict error:&error];
+		NSArray *textNodes = [rootElem nodesForXPath:@"//xmlns:TextView/xmlns:SetFontStyle" namespaceMappings:xmlnsDict error:&error];
 		if (textNodes && [textNodes count] >= 9)
 		{
 			self.appCompany = [[[textNodes objectAtIndex:0] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -223,7 +223,7 @@
 			self.localPrice = [[[textNodes objectAtIndex:8] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
 			// Use category string to find the categoryId.
-			textNodes = [rootElem nodesForXPath:[NSString stringWithFormat:@"//itunes:PathElement[@displayName='%@']", self.category] namespaceMappings:xmlnsDict error:&error];
+			textNodes = [rootElem nodesForXPath:[NSString stringWithFormat:@"//xmlns:PathElement[@displayName='%@']", self.category] namespaceMappings:xmlnsDict error:&error];
 			if (textNodes && [textNodes count] > 0)
 			{
 				NSString *catUrl = [[[textNodes objectAtIndex:0] stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -233,7 +233,7 @@
 			}
 
 			// Company/support URLs.
-			textNodes = [rootElem nodesForXPath:@"//itunes:OpenURL" namespaceMappings:xmlnsDict error:&error];
+			textNodes = [rootElem nodesForXPath:@"//xmlns:OpenURL" namespaceMappings:xmlnsDict error:&error];
 			if (textNodes && [textNodes count] >= 5)
 			{
 				CXMLElement *companyURLNode = [textNodes objectAtIndex:2];
@@ -246,16 +246,16 @@
 			}
 
 			// App icon URL
-			textNodes = [rootElem nodesForXPath:@"//itunes:GotoURL/itunes:View/itunes:PictureView" namespaceMappings:xmlnsDict error:&error];
+			textNodes = [rootElem nodesForXPath:@"//xmlns:GotoURL/xmlns:View/xmlns:PictureView" namespaceMappings:xmlnsDict error:&error];
 			if (textNodes && [textNodes count] > 0)
 			{
 				CXMLElement *iconNode = [textNodes objectAtIndex:0];
-				if ([[[iconNode attributeForName:@"alt"] stringValue] hasSuffix:@" artwork"])
+				if ([[[iconNode attributeForName:@"alt"] stringValue] hasSuffix:@"artwork"])
 					self.appIconURL = [[iconNode attributeForName:@"url"] stringValue];
 			}
 
 			// Rating counts for CURRENT version.
-			textNodes = [rootElem nodesForXPath:@"//itunes:View[@viewName='RatingsFrame']//itunes:Test[@id='1234']//itunes:SetFontStyle[@normalStyle='descriptionTextColor']" namespaceMappings:xmlnsDict error:&error];
+			textNodes = [rootElem nodesForXPath:@"//xmlns:View[@viewName='RatingsFrame']//xmlns:Test[@id='1234']//xmlns:SetFontStyle[@normalStyle='descriptionTextColor']" namespaceMappings:xmlnsDict error:&error];
 			if (textNodes && [textNodes count] >= 6)
 			{
 				int currentIndex = 0;
@@ -301,7 +301,7 @@
 			}
 
 			// Rating counts for ALL versions.
-			textNodes = [rootElem nodesForXPath:@"//itunes:View[@viewName='RatingsFrame']//itunes:Test[@id='5678']//itunes:SetFontStyle[@normalStyle='descriptionTextColor']" namespaceMappings:xmlnsDict error:&error];
+			textNodes = [rootElem nodesForXPath:@"//xmlns:View[@viewName='RatingsFrame']//xmlns:Test[@id='5678']//xmlns:SetFontStyle[@normalStyle='descriptionTextColor']" namespaceMappings:xmlnsDict error:&error];
 			if (textNodes && [textNodes count] >= 6)
 			{
 				int currentIndex = 0;
@@ -347,7 +347,7 @@
 			}
 
 			// Average rating for CURRENT version.
-			textNodes = [rootElem nodesForXPath:@"//itunes:View[@viewName='RatingsFrame']//itunes:Test[@id='1234']//itunes:HBoxView//itunes:VBoxView//itunes:HBoxView" namespaceMappings:xmlnsDict error:&error];
+			textNodes = [rootElem nodesForXPath:@"//xmlns:View[@viewName='RatingsFrame']//xmlns:Test[@id='1234']//xmlns:HBoxView//xmlns:VBoxView//xmlns:HBoxView" namespaceMappings:xmlnsDict error:&error];
 			if (textNodes && [textNodes count] > 0)
 			{
 				CXMLElement *ratingNode = [textNodes objectAtIndex:0];
@@ -371,7 +371,7 @@
 			}
 
 			// Average rating for ALL versions.
-			textNodes = [rootElem nodesForXPath:@"//itunes:View[@viewName='RatingsFrame']//itunes:Test[@id='5678']//itunes:HBoxView//itunes:VBoxView//itunes:HBoxView" namespaceMappings:xmlnsDict error:&error];
+			textNodes = [rootElem nodesForXPath:@"//xmlns:View[@viewName='RatingsFrame']//xmlns:Test[@id='5678']//xmlns:HBoxView//xmlns:VBoxView//xmlns:HBoxView" namespaceMappings:xmlnsDict error:&error];
 			if (textNodes && [textNodes count] > 0)
 			{
 				CXMLElement *ratingNode = [textNodes objectAtIndex:0];
@@ -395,7 +395,7 @@
 			}
 
 			// Review counts.
-			textNodes = [rootElem nodesForXPath:@"//itunes:GotoURL/itunes:TextView/itunes:SetFontStyle[@normalStyle='textColor']/itunes:b" namespaceMappings:xmlnsDict error:&error];
+			textNodes = [rootElem nodesForXPath:@"//xmlns:GotoURL/xmlns:TextView/xmlns:SetFontStyle[@normalStyle='textColor']/xmlns:b" namespaceMappings:xmlnsDict error:&error];
 			if (textNodes && [textNodes count] >= 3)
 			{
 				GTMRegex *regex = [GTMRegex regexWithPattern:@"^([0-9]+)[^0-9].*"];
