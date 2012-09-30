@@ -36,7 +36,7 @@
 
 @class ARAppStoreApplication;
 @class PSSelectionListViewController;
-
+@class PSEmptyTableViewController;
 
 @interface AREditAppStoreApplicationViewController : UIViewController
 {
@@ -47,8 +47,12 @@
 	NSString *defaultStore;
 	ARAppStoreApplication *app;
 	PSSelectionListViewController *selectionListViewController;
+    // Fix for deprecated groupTableViewBackgroundColor in iOS6
+    UITableView *backgroundTableView;
+    PSEmptyTableViewController *backgroundTableViewController;
 }
 
+@property (nonatomic, retain) IBOutlet UITableView *backgroundTableView;
 @property (nonatomic, retain) IBOutlet UITextField *appId;
 @property (nonatomic, retain) IBOutlet UILabel *label;
 @property (nonatomic, retain) IBOutlet UIButton *defaultStoreButton;

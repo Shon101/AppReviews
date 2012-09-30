@@ -83,7 +83,8 @@
 		[appsController release];
 
 		// Add the navigation controller's view to the window.
-		[window addSubview:[navigationController view]];
+        window.rootViewController = navigationController;
+		//[window addSubview:[navigationController view]];
 
 		[window makeKeyAndVisible];
 	}

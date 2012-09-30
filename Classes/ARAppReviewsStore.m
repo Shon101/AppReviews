@@ -118,7 +118,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(ARAppReviewsStore);
 	self = [super init];
 	if (self)
 	{
-		iTunesUserAgent = [[NSString stringWithString:@"iTunes/10.2 (Macintosh; U; PPC Mac OS X 10.2"] retain];
+		iTunesUserAgent = @"iTunes/10.2 (Macintosh; U; PPC Mac OS X 10.2";
 		if ([self open])
 		{
 			[self setupAppStores];

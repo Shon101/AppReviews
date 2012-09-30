@@ -64,6 +64,7 @@
 		FB1150F213E7D90F0036C931 /* 143572.png in Resources */ = {isa = PBXBuildFile; fileRef = FB1150D113E7D90F0036C931 /* 143572.png */; };
 		FB1150F313E7D90F0036C931 /* 143573.png in Resources */ = {isa = PBXBuildFile; fileRef = FB1150D213E7D90F0036C931 /* 143573.png */; };
 		FB11510813E7E0100036C931 /* NSBundle+PSExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = FB11510713E7E0100036C931 /* NSBundle+PSExtras.m */; };
+		FB15D8061612750500B708BE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB15D8051612750500B708BE /* Default-568h@2x.png */; };
 		FB199C39140D103100A193B8 /* 143444@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB199BBE140D103100A193B8 /* 143444@2x.png */; };
 		FB199C3A140D103100A193B8 /* 143566@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB199BBF140D103100A193B8 /* 143566@2x.png */; };
 		FB199C3B140D103100A193B8 /* 143571@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB199BC0140D103100A193B8 /* 143571@2x.png */; };
@@ -197,6 +198,7 @@
 		FB61E61F11F3C27C00CEBBC4 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = FB61E61A11F3C27C00CEBBC4 /* Icon-Small.png */; };
 		FB61E62011F3C27C00CEBBC4 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB61E61B11F3C27C00CEBBC4 /* Icon-Small@2x.png */; };
 		FB61E62111F3C27C00CEBBC4 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB61E61C11F3C27C00CEBBC4 /* Icon@2x.png */; };
+		FB634B8616063066006B31C4 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB634B8516063066006B31C4 /* Default@2x.png */; };
 		FB77EA5D10D54BEE00CC7F43 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB77EA5C10D54BEE00CC7F43 /* Entitlements.plist */; };
 		FB7909C90F6A47F000E1593F /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = FB7909C40F6A47F000E1593F /* FMDatabase.m */; };
 		FB7909CA0F6A47F000E1593F /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FB7909C60F6A47F000E1593F /* FMDatabaseAdditions.m */; };
@@ -253,6 +255,7 @@
 		FB9CA0B40FD8887D009D1542 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB9CA0B30FD8887D009D1542 /* MessageUI.framework */; };
 		FBAA7527103B6F5D002585DE /* ARAppStoreUpdateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FBAA7526103B6F5D002585DE /* ARAppStoreUpdateOperation.m */; };
 		FBAA77AB103E13D7002585DE /* ARAppStoreVerifyOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FBAA77AA103E13D7002585DE /* ARAppStoreVerifyOperation.m */; };
+		FBAE87681615164200C9100D /* PSEmptyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBAE87671615164200C9100D /* PSEmptyTableViewController.m */; };
 		FBB44EC80ECCEB1D00A04B1F /* PSAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBB44EC70ECCEB1D00A04B1F /* PSAboutViewController.m */; };
 		FBB44EF60ECCF24700A04B1F /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FBB44EF50ECCF24700A04B1F /* Icon.png */; };
 		FBB451C90ECF150400A04B1F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FBB451C80ECF150400A04B1F /* Settings.bundle */; };
@@ -429,6 +432,7 @@
 		FB1150D213E7D90F0036C931 /* 143573.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 143573.png; path = Resources/143573.png; sourceTree = "<group>"; };
 		FB11510613E7E0100036C931 /* NSBundle+PSExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+PSExtras.h"; sourceTree = "<group>"; };
 		FB11510713E7E0100036C931 /* NSBundle+PSExtras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+PSExtras.m"; sourceTree = "<group>"; };
+		FB15D8051612750500B708BE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		FB199BBE140D103100A193B8 /* 143444@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "143444@2x.png"; path = "Resources/143444@2x.png"; sourceTree = "<group>"; };
 		FB199BBF140D103100A193B8 /* 143566@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "143566@2x.png"; path = "Resources/143566@2x.png"; sourceTree = "<group>"; };
 		FB199BC0140D103100A193B8 /* 143571@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "143571@2x.png"; path = "Resources/143571@2x.png"; sourceTree = "<group>"; };
@@ -566,6 +570,7 @@
 		FB61E61A11F3C27C00CEBBC4 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
 		FB61E61B11F3C27C00CEBBC4 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
 		FB61E61C11F3C27C00CEBBC4 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		FB634B8516063066006B31C4 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		FB77EA5C10D54BEE00CC7F43 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		FB7909C30F6A47F000E1593F /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = FMDB/FMDatabase.h; sourceTree = "<group>"; };
 		FB7909C40F6A47F000E1593F /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = FMDB/FMDatabase.m; sourceTree = "<group>"; };
@@ -647,6 +652,8 @@
 		FBAA7526103B6F5D002585DE /* ARAppStoreUpdateOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARAppStoreUpdateOperation.m; sourceTree = "<group>"; };
 		FBAA77A9103E13D7002585DE /* ARAppStoreVerifyOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARAppStoreVerifyOperation.h; sourceTree = "<group>"; };
 		FBAA77AA103E13D7002585DE /* ARAppStoreVerifyOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARAppStoreVerifyOperation.m; sourceTree = "<group>"; };
+		FBAE87661615164200C9100D /* PSEmptyTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSEmptyTableViewController.h; sourceTree = "<group>"; };
+		FBAE87671615164200C9100D /* PSEmptyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSEmptyTableViewController.m; sourceTree = "<group>"; };
 		FBB44EC60ECCEB1D00A04B1F /* PSAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSAboutViewController.h; sourceTree = "<group>"; };
 		FBB44EC70ECCEB1D00A04B1F /* PSAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSAboutViewController.m; sourceTree = "<group>"; };
 		FBB44EF50ECCF24700A04B1F /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -844,6 +851,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FB15D8051612750500B708BE /* Default-568h@2x.png */,
+				FB634B8516063066006B31C4 /* Default@2x.png */,
 				FB199BBE140D103100A193B8 /* 143444@2x.png */,
 				FB199BBF140D103100A193B8 /* 143566@2x.png */,
 				FB199BC0140D103100A193B8 /* 143571@2x.png */,
@@ -1227,6 +1236,8 @@
 				FB81A2CB0EAF35750061B88B /* PSImageView.m */,
 				FBB4539C0ED0348300A04B1F /* PSRatingView.h */,
 				FBB4539D0ED0348300A04B1F /* PSRatingView.m */,
+				FBAE87661615164200C9100D /* PSEmptyTableViewController.h */,
+				FBAE87671615164200C9100D /* PSEmptyTableViewController.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1383,7 +1394,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "AppReviews" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1681,6 +1692,8 @@
 				FB199CB1140D103100A193B8 /* 143538@2x.png in Resources */,
 				FB199CB2140D103100A193B8 /* 143564@2x.png in Resources */,
 				FB199CB3140D103100A193B8 /* 143563@2x.png in Resources */,
+				FB634B8616063066006B31C4 /* Default@2x.png in Resources */,
+				FB15D8061612750500B708BE /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1698,7 +1711,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "git=/usr/local/git/bin/git\nversion=`$git describe --dirty | sed 's/[a-zA-Z]*//'`\nshortversion=`echo $version | sed 's/\\-.*//'`\necho \"#define GIT_VERSION $version\" > Classes/InfoPlist.h\necho \"#define GIT_SHORT_VERSION $shortversion\" >> Classes/InfoPlist.h\ntouch Info.plist";
+			shellScript = "git=/usr/bin/git\nversion=`$git describe --dirty | sed 's/[a-zA-Z]*//'`\nshortversion=`echo $version | sed 's/\\-.*//'`\necho \"#define GIT_VERSION $version\" > Classes/InfoPlist.h\necho \"#define GIT_SHORT_VERSION $shortversion\" >> Classes/InfoPlist.h\ntouch Info.plist";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1763,6 +1776,7 @@
 				FBD981CC130357DF00613C30 /* CXMLNode_XPathExtensions.m in Sources */,
 				FBD981CD130357DF00613C30 /* CTidy.m in Sources */,
 				FB11510813E7E0100036C931 /* NSBundle+PSExtras.m in Sources */,
+				FBAE87681615164200C9100D /* PSEmptyTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1790,11 +1804,12 @@
 					AR_DEBUG_XML,
 					DEBUG,
 				);
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
 				INFOPLIST_PREFIX_HEADER = Classes/InfoPlist.h;
 				INFOPLIST_PREPROCESS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = AppReviews;
 			};
 			name = Debug;
@@ -1806,11 +1821,12 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AppReviews_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
 				INFOPLIST_PREFIX_HEADER = Classes/InfoPlist.h;
 				INFOPLIST_PREPROCESS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = AppReviews;
 			};
 			name = Release;
@@ -1819,21 +1835,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Charles Gamble (R5RCU3B9M5)";
 				CURRENT_PROJECT_VERSION = 3;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-lsqlite3",
 					"-lxml2",
 					"-lz",
 				);
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "5C2CFC12-BA7F-4DDE-A534-F9C17D45F041";
 				SDKROOT = iphoneos;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1843,19 +1859,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Charles Gamble (R5RCU3B9M5)";
 				CURRENT_PROJECT_VERSION = 3;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = (
 					"-lsqlite3",
 					"-lxml2",
 					"-lz",
 				);
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "5C2CFC12-BA7F-4DDE-A534-F9C17D45F041";
 				SDKROOT = iphoneos;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1886,19 +1902,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Percula Software Limited";
 				CURRENT_PROJECT_VERSION = 3;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = (
 					"-lsqlite3",
 					"-lxml2",
 					"-lz",
 				);
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "79E85E46-BE31-440C-9F1E-FAC6BC4740AA";
 				SDKROOT = iphoneos;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1912,11 +1928,12 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AppReviews_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
 				INFOPLIST_PREFIX_HEADER = Classes/InfoPlist.h;
 				INFOPLIST_PREPROCESS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = (
 					"-lsqlite3",
 					"-lz",

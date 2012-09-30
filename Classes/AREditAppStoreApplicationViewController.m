@@ -39,13 +39,14 @@
 #import "ARAppStoreApplicationDetailsImporter.h"
 #import "ARAppStore.h"
 #import "PSProgressHUD.h"
+#import "PSEmptyTableViewController.h"
 #import "AppReviewsAppDelegate.h"
 #import "PSLog.h"
 
 
 @implementation AREditAppStoreApplicationViewController
 
-@synthesize appId, label, defaultStoreButton, saveButton, defaultStore, app, selectionListViewController;
+@synthesize appId, label, defaultStoreButton, saveButton, defaultStore, app, selectionListViewController, backgroundTableView;
 
 // Override initWithNibName:bundle: to load the view using a nib file then perform additional customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -69,6 +70,12 @@
 	[saveButton release];
 	[app release];
 	[selectionListViewController release];
+
+    backgroundTableView.dataSource = nil;
+    backgroundTableView.delegate = nil;
+    [backgroundTableView release];
+    [backgroundTableViewController release];
+
     [super dealloc];
 }
 
@@ -92,8 +99,8 @@
     appId.font = [UIFont boldSystemFontOfSize:16];
     label.font = [UIFont systemFontOfSize:14];
 
-    // Set the view background to match the grouped tables in the other views.
-    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    // Fix for deprecated groupTableViewBackgroundColor in iOS6
+    backgroundTableViewController = [[PSEmptyTableViewController alloc] initWithTableView:backgroundTableView];
 
 	if (app)
 	{
@@ -111,6 +118,12 @@
 	self.label = nil;
 	self.defaultStoreButton = nil;
 	self.saveButton = nil;
+
+    backgroundTableView.dataSource = nil;
+    backgroundTableView.delegate = nil;
+    self.backgroundTableView = nil;
+    [backgroundTableViewController release];
+    backgroundTableViewController = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated

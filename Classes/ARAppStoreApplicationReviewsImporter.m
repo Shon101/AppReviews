@@ -206,6 +206,8 @@
 					xmlState = ReviewsReadingNo;
 				}
 				break;
+            default:
+                break;
 		}
 	}
 	else if ([elementNameLower isEqualToString:@"hboxview"])
@@ -237,6 +239,8 @@
 				}
 				break;
 			}
+            default:
+                break;
 		}
 	}
 	else if ([elementNameLower isEqualToString:@"popupbuttonview"])
@@ -252,6 +256,8 @@
 					xmlState = ReviewsSeekingSortByPopup;
 				break;
 			}
+            default:
+                break;
 		}
 	}
 	else if ([elementNameLower isEqualToString:@"gotourl"])
@@ -262,6 +268,8 @@
 				[currentString setString:@""];
 				xmlState = ReviewsReadingReviewer;
 				break;
+            default:
+                break;
 		}
 	}
 	else if ([elementNameLower isEqualToString:@"openurl"])
@@ -286,6 +294,8 @@
 		case ReviewsReadingNo:
 			[currentString appendString:string];
 			break;
+        default:
+            break;
 	}
 }
 
@@ -401,6 +411,8 @@
 				xmlState = ReviewsSeekingSummary;
 				break;
 			}
+            default:
+                break;
 		}
 	}
 	else if ([elementNameLower isEqualToString:@"gotourl"])
@@ -416,6 +428,8 @@
 				xmlState = ReviewsReadingReviewVersionDate;
 				break;
 			}
+            default:
+                break;
 		}
 	}
 }
