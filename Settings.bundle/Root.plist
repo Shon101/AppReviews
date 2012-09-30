@@ -62,6 +62,20 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Albania</string>
+			<key>Key</key>
+			<string>143575</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Algeria</string>
 			<key>Key</key>
 			<string>143563</string>
@@ -258,9 +272,37 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Benin</string>
+			<key>Key</key>
+			<string>143576</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Bermuda</string>
 			<key>Key</key>
 			<string>143542</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Bhutan</string>
+			<key>Key</key>
+			<string>143577</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -342,9 +384,51 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Burkina Faso</string>
+			<key>Key</key>
+			<string>143578</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Cambodia</string>
+			<key>Key</key>
+			<string>143579</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Canada</string>
 			<key>Key</key>
 			<string>143455</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Cape Verde</string>
+			<key>Key</key>
+			<string>143580</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -373,6 +457,20 @@
 			<string>Česká republika</string>
 			<key>Key</key>
 			<string>143489</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Chad</string>
+			<key>Key</key>
+			<string>143581</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -552,9 +650,51 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Federated States of Micronesia</string>
+			<key>Key</key>
+			<string>143591</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Fiji</string>
+			<key>Key</key>
+			<string>143583</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>France</string>
 			<key>Key</key>
 			<string>143442</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Gambia</string>
+			<key>Key</key>
+			<string>143584</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -611,6 +751,20 @@
 			<string>Guatemala</string>
 			<key>Key</key>
 			<string>143504</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Guinea-Bissau</string>
+			<key>Key</key>
+			<string>143585</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -832,6 +986,34 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Kyrgyzstan</string>
+			<key>Key</key>
+			<string>143586</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Laos</string>
+			<key>Key</key>
+			<string>143587</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Latvija</string>
 			<key>Key</key>
 			<string>143519</string>
@@ -849,6 +1031,20 @@
 			<string>Lebanon</string>
 			<key>Key</key>
 			<string>143497</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Liberia</string>
+			<key>Key</key>
+			<string>143588</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -944,6 +1140,20 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Malawi</string>
+			<key>Key</key>
+			<string>143589</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Malaysia</string>
 			<key>Key</key>
 			<string>143473</string>
@@ -975,6 +1185,20 @@
 			<string>Malta</string>
 			<key>Key</key>
 			<string>143521</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Mauritania</string>
+			<key>Key</key>
+			<string>143590</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -1028,6 +1252,20 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Mongolia</string>
+			<key>Key</key>
+			<string>143592</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Montserrat</string>
 			<key>Key</key>
 			<string>143547</string>
@@ -1042,9 +1280,51 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Mozambique</string>
+			<key>Key</key>
+			<string>143593</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Namibia</string>
+			<key>Key</key>
+			<string>143594</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Nederland</string>
 			<key>Key</key>
 			<string>143452</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Nepal</string>
+			<key>Key</key>
+			<string>143484</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -1168,9 +1448,37 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Palau</string>
+			<key>Key</key>
+			<string>143595</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Panamá</string>
 			<key>Key</key>
 			<string>143485</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Papua New Guinea</string>
+			<key>Key</key>
+			<string>143597</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -1266,6 +1574,20 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Republic of the Congo</string>
+			<key>Key</key>
+			<string>143582</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>República Dominicana</string>
 			<key>Key</key>
 			<string>143508</string>
@@ -1283,6 +1605,20 @@
 			<string>Romania</string>
 			<key>Key</key>
 			<string>143487</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>São Tomé and Príncipe</string>
+			<key>Key</key>
+			<string>143598</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -1336,6 +1672,34 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Seychelles</string>
+			<key>Key</key>
+			<string>143599</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Sierra Leone</string>
+			<key>Key</key>
+			<string>143600</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Singapore</string>
 			<key>Key</key>
 			<string>143464</string>
@@ -1367,6 +1731,20 @@
 			<string>Slovenia</string>
 			<key>Key</key>
 			<string>143499</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Solomon Islands</string>
+			<key>Key</key>
+			<string>143601</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -1490,6 +1868,34 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Swaziland</string>
+			<key>Key</key>
+			<string>143602</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Tajikistan</string>
+			<key>Key</key>
+			<string>143603</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Tanzania</string>
 			<key>Key</key>
 			<string>143572</string>
@@ -1560,6 +1966,20 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Turkmenistan</string>
+			<key>Key</key>
+			<string>143604</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Turks &amp; Caicos</string>
 			<key>Key</key>
 			<string>143552</string>
@@ -1591,6 +2011,20 @@
 			<string>UK</string>
 			<key>Key</key>
 			<string>143444</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Ukraine</string>
+			<key>Key</key>
+			<string>143492</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
@@ -1689,6 +2123,20 @@
 			<string>Yemen</string>
 			<key>Key</key>
 			<string>143571</string>
+			<key>DefaultValue</key>
+			<true/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Zimbabwe</string>
+			<key>Key</key>
+			<string>143605</string>
 			<key>DefaultValue</key>
 			<true/>
 			<key>TrueValue</key>
